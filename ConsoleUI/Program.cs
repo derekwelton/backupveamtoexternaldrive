@@ -37,6 +37,7 @@ namespace ConsoleUI
                 log.Information($"Took {(sw.ElapsedMilliseconds / 1000) / 60} minutes to backup");
                 log.Information($"Time Stop: {DateTime.Now}");
                 log.Information("BACKUP WAS SUCCESSFUL");
+                Thread.Sleep(10000);
             }
             catch(Exception ex)
             {
