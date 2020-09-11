@@ -19,17 +19,29 @@ namespace ConsoleUI
             Startup();
 
             var rootPath = _config["VeamJobPath"];
-            var externalDrives = FileService.GetAllExternalDrives();
-            log.Information("External Drives Count:{count}",externalDrives.Count);
+            //var externalDrives = FileService.GetAllExternalDrives();
+            var paths = FileService.GetPaths();
+            //log.Information("External Drives Count:{count}",externalDrives.Count);
             Stopwatch sw = Stopwatch.StartNew();
+            log.Information("Checking Path: {path}",$"{rootPath}");
+            DirectoryInfo folder = new DirectoryInfo(rootPath);
+            if(folder != null) log.Information("folder exist:{folder}",folder);
+            var files = Directory.GetFiles(rootPath);
+            foreach (var file in files)
+            {
+                log.Information("found file: {file}",file);
+            }
+
 
             try
             {
                 //delete everything from the drives
-                FileService.FormatExternalDrives(externalDrives);
+                //FileService.FormatExternalDrives(externalDrives);
 
                 //Copy over files
-                FileService.CopyOverVeamFilesToDrives(externalDrives, rootPath);
+                //FileService.CopyOverVeamFilesToDrives(externalDrives, rootPath);
+
+                FileService.CopyOverVeamFilesToDrives(paths,rootPath);
 
 
                 //finish up
@@ -42,6 +54,7 @@ namespace ConsoleUI
             catch(Exception ex)
             {
                 log.Error(ex,"Something went wrong");
+                Thread.Sleep(10000);
             }
             
         }

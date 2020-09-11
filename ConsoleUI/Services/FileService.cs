@@ -49,6 +49,17 @@ namespace ConsoleUI.Services
             return backupDrives;
         }
 
+        public static List<string> GetPaths()
+        {
+            List<string> paths = new List<string>
+            {
+                @"\\tsclient\F",
+                @"\\tsclient\E",
+            };
+
+            return paths;
+        } 
+
         public static void FormatExternalDrives(List<DriveInfo> drives)
         {
             foreach (var drive in drives)
@@ -97,6 +108,34 @@ namespace ConsoleUI.Services
                     {
                         File.Copy(filePath,filePath.Replace(sourcePath, $"{newRootPath}\\"),true);
                         Program.log.Information("Volume {volume}: File ({filename}) LastWriteDate ({date}) was copied.",drive.VolumeLabel,fileInfo.Name,fileInfo.LastWriteTime);
+                    }
+                }
+            }
+        }
+
+        public static void CopyOverVeamFilesToDrives(List<string> paths, string sourcePath)
+        {
+            var saturdayDate = DateService.GetLastSaturday();
+            foreach (var path in paths)
+            {
+                if(File.Exists($"{path}\\autorun.inf")) continue;
+
+                //setup directories on the drive to mirror the source
+                var newRootPath = Directory.CreateDirectory($"{path}\\BACKUPS");
+                var directoriesCollection = Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories);
+                foreach (var directory in directoriesCollection)
+                {
+                    Directory.CreateDirectory(directory.Replace(sourcePath, $"{newRootPath}\\"));
+                }
+
+                //begin copying over everything
+                foreach (var filePath in Directory.GetFiles(sourcePath, "*.*", searchOption: SearchOption.AllDirectories))
+                {
+                    var fileInfo = new FileInfo(filePath);
+                    if (fileInfo.LastWriteTime >= saturdayDate)
+                    {
+                        File.Copy(filePath, filePath.Replace(sourcePath, $"{newRootPath}\\"), true);
+                        Program.log.Information("Volume {volume}: File ({filename}) LastWriteDate ({date}) was copied.", path, fileInfo.Name, fileInfo.LastWriteTime);
                     }
                 }
             }
