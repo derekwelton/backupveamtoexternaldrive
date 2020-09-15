@@ -18,13 +18,15 @@ namespace ConsoleUI
             //startup
             Startup();
 
-            var rootPath = _config["VeamJobPath"];
-            var externalDrives = FileService.GetAllExternalDrives();
-            log.Information("External Drives Count:{count}",externalDrives.Count);
-            Stopwatch sw = Stopwatch.StartNew();
+            
 
             try
             {
+                var rootPath = _config["VeamJobPath"];
+                var externalDrives = FileService.GetAllExternalDrives();
+                log.Information("External Drives Count:{count}", externalDrives.Count);
+                Stopwatch sw = Stopwatch.StartNew();
+
                 //delete everything from the drives
                 FileService.FormatExternalDrives(externalDrives);
 

@@ -36,6 +36,7 @@ namespace ConsoleUI.Services
 
             foreach (DriveInfo dirve in allDrives)
             {
+                if(dirve.DriveType == DriveType.CDRom) continue;
                 Program.log.Information("Drive: {drive} || Type: {type} || IsReady: {isReady} || Name: {name} ",dirve.VolumeLabel,dirve.DriveType,dirve.IsReady,dirve.Name);
                 if (dirve.IsReady)
                 {
@@ -53,6 +54,7 @@ namespace ConsoleUI.Services
         {
             foreach (var drive in drives)
             {
+                if(drive.DriveType == DriveType.CDRom || drive.Name.Contains(@"C:\")) continue;
                 var dirInfo = new DirectoryInfo(drive.Name);
                 foreach (var dir in dirInfo.GetDirectories())
                 {
